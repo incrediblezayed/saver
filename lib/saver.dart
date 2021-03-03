@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:path_provider/path_provider.dart' as path;
 import 'package:permission_handler/permission_handler.dart';
 
 enum MimeType { WORD, EXCEL, PPT, TEXT, CSV, OTHER }
@@ -58,18 +58,18 @@ class Saver {
         if (status) {
           Permission.storage.request();
         }
-        Directory directory = await getDownloadsDirectory();
-        final String path = directory.path + '/' + name + '.' + ext;
-        final File file = File(path);
+        Directory directory = await path.getExternalStorageDirectory();
+        final String filePath = directory.path + '/' + name + '.' + ext;
+        final File file = File(filePath);
         await file.writeAsBytes(bytes);
         bool exist = await file.exists();
         if (exist) {
           print("File saved at: ${file.path}");
         }
       } else if (Platform.isIOS) {
-        final Directory iosDir = await getApplicationDocumentsDirectory();
-        final String path = iosDir.path + '/' + name + '.' + ext;
-        final File file = File(path);
+        final Directory iosDir = await path.getApplicationDocumentsDirectory();
+        final String filePath = iosDir.path + '/' + name + '.' + ext;
+        final File file = File(filePath);
         await file.writeAsBytes(bytes);
       } else {
         throw UnimplementedError(
