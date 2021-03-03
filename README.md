@@ -16,7 +16,7 @@ Saver saver = new Saver();
 
 and call the saveFile() with respective parameter.
 This saveFile() method takes 4 Positional Arguments.
-_String name_, _List<dynamic> bytes_, _MimeType type_, _String extension_
+_String name_ which takes the name of the file, _List<dynamic> bytes_ which will be your actual encoded file, _MimeType type_ which will be your file type, _String ext_ this will be your file extension.
 MimeType is also included in my Package, I've included types for **Sheets, Presentation, Word, Plain Text, and Optional Octect Stream for other Types of files** 
 
 
