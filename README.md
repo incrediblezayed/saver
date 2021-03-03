@@ -21,7 +21,7 @@ MimeType is also included in my Package, I've included types for **Sheets, Prese
 
 
 ```dart
-saver.saveFile("File", bytes, MimeType.EXCEL, xlsx);
+saver.saveFile("File", bytes, MimeType.EXCEL, 'xlsx');
 ```
 
 ### And You're done
