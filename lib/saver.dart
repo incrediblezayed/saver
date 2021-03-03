@@ -56,9 +56,7 @@ class Saver {
       } else if (Platform.isAndroid) {
         PermissionStatus status = await PermissionHandler()
             .checkPermissionStatus(PermissionGroup.storage);
-        if (status == PermissionStatus.neverAskAgain) {
-          PermissionHandler().openAppSettings();
-        } else if (status == PermissionStatus.denied) {
+        if (status == PermissionStatus.denied) {
           PermissionHandler().requestPermissions([PermissionGroup.storage]);
         }
         Directory directory = await getDownloadsDirectory();
