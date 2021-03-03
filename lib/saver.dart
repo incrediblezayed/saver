@@ -1,10 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
+';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 enum MimeType { WORD, EXCEL, PPT, TEXT, CSV, OTHER }
 
@@ -54,7 +55,14 @@ class Saver {
         String args = jsonEncode(data);
         await _channel.invokeMethod<void>('saveFile', args);
       } else if (Platform.isAndroid) {
-        Directory directory = await getExternalStorageDirectory();
+        PermissionStatus status = await PermissionHandler()
+            .checkPermissionStatus(PermissionGroup.storage);
+        if (status == PermissionStatus.neverAskAgain) {
+          PermissionHandler().openAppSettings();
+        } else if (status == PermissionStatus.denied) {
+          PermissionHandler().requestPermissions([PermissionGroup.storage]);
+        }
+        Directory directory = await getDownloadsDirectory();
         final String path = directory.path + '/' + name + '.' + ext;
         final File file = File(path);
         await file.writeAsBytes(bytes);
