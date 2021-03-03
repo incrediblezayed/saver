@@ -2,7 +2,8 @@ name: saver
 description: A new flutter plugin project.
 version: 0.0.1
 publish_to:
-repository: 
+repository:
+  https://github.com/incrediblezayed/saver
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
