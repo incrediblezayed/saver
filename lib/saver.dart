@@ -41,30 +41,38 @@ class Saver {
   }
 
   Future<void> saveFile(
-      String name, List<dynamic> bytes, MimeType mimeType, String ext) async {
+      String name, List<int> bytes, MimeType mimeType, String ext) async {
     String mime = _getType(mimeType);
-    if (kIsWeb) {
-      Map<String, dynamic> data = <String, dynamic>{
-        "bytes": bytes,
-        "name": name,
-        "ext": ext,
-        "type": mime
-      };
-      String args = jsonEncode(data);
-      await _channel.invokeMethod<void>('saveFile', args);
-    } else if (Platform.isAndroid) {
-      Directory directory = await getExternalStorageDirectory();
-      final String path = directory.path + '/' + name + '.' + ext;
-      final File file = File(path);
-      await file.writeAsBytes(bytes);
-    } else if (Platform.isIOS) {
-      final Directory iosDir = await getApplicationDocumentsDirectory();
-      final String path = iosDir.path + '/' + name + '.' + ext;
-      final File file = File(path);
-      await file.writeAsBytes(bytes);
-    } else {
-      throw UnimplementedError(
-          "Sorry but the plugin only supports web, ios and android");
+    try {
+      if (kIsWeb) {
+        Map<String, dynamic> data = <String, dynamic>{
+          "bytes": bytes,
+          "name": name,
+          "ext": ext,
+          "type": mime
+        };
+        String args = jsonEncode(data);
+        await _channel.invokeMethod<void>('saveFile', args);
+      } else if (Platform.isAndroid) {
+        Directory directory = await getExternalStorageDirectory();
+        final String path = directory.path + '/' + name + '.' + ext;
+        final File file = File(path);
+        await file.writeAsBytes(bytes);
+        bool exist = await file.exists();
+        if (exist) {
+          print("File saved at: ${file.path}");
+        }
+      } else if (Platform.isIOS) {
+        final Directory iosDir = await getApplicationDocumentsDirectory();
+        final String path = iosDir.path + '/' + name + '.' + ext;
+        final File file = File(path);
+        await file.writeAsBytes(bytes);
+      } else {
+        throw UnimplementedError(
+            "Sorry but the plugin only supports web, ios and android");
+      }
+    } catch (e) {
+      print(e);
     }
   }
 }

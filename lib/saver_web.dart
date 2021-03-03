@@ -17,9 +17,9 @@ class SaverWeb {
     final pluginInstance = SaverWeb();
     channel.setMethodCallHandler(pluginInstance.handleMethodCall);
   }
+
   Future<dynamic> handleMethodCall(MethodCall call) async {
     switch (call.method) {
-
       case 'saveFile':
         String json = call.arguments;
         Map data = jsonDecode(json);
@@ -37,7 +37,7 @@ class SaverWeb {
   }
 
   void downloadFile(
-      {List<dynamic> bytes, String name, String type, String ext}) async {
+      {List<int> bytes, String name, String type, String ext}) async {
     String url;
     AnchorElement anchor;
     try {
@@ -55,6 +55,4 @@ class SaverWeb {
       print(e);
     }
   }
-
-
 }
