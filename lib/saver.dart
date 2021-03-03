@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart' as path;
-import 'package:permission_handler/permission_handler.dart';
 
 enum MimeType { WORD, EXCEL, PPT, TEXT, CSV, OTHER }
 
@@ -54,10 +53,6 @@ class Saver {
         String args = jsonEncode(data);
         await _channel.invokeMethod<void>('saveFile', args);
       } else if (Platform.isAndroid) {
-        var status = await Permission.storage.isDenied;
-        if (status) {
-          Permission.storage.request();
-        }
         Directory directory = await path.getExternalStorageDirectory();
         final String filePath = directory.path + '/' + name + '.' + ext;
         final File file = File(filePath);
@@ -75,6 +70,23 @@ class Saver {
         throw UnimplementedError(
             "Sorry but the plugin only supports web, ios and android");
       }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> downloadFile(
+      String name, List<int> bytes, MimeType mimeType, String ext) async {
+    String mime = _getType(mimeType);
+    try {
+      Map<String, dynamic> data = <String, dynamic>{
+        "bytes": bytes,
+        "name": name,
+        "ext": ext,
+        "type": mime
+      };
+      String args = jsonEncode(data);
+      await _channel.invokeMethod<void>('saveFile', args);
     } catch (e) {
       print(e);
     }
