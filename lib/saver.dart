@@ -54,10 +54,9 @@ class Saver {
         String args = jsonEncode(data);
         await _channel.invokeMethod<void>('saveFile', args);
       } else if (Platform.isAndroid) {
-        PermissionStatus status = await PermissionHandler()
-            .checkPermissionStatus(PermissionGroup.storage);
-        if (status == PermissionStatus.denied) {
-          PermissionHandler().requestPermissions([PermissionGroup.storage]);
+        var status = await Permission.storage.isDenied;
+        if (status) {
+          Permission.storage.request();
         }
         Directory directory = await getDownloadsDirectory();
         final String path = directory.path + '/' + name + '.' + ext;
